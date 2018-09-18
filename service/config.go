@@ -23,21 +23,21 @@ func GetConfig() *entity.Config {
 
 // GetConfigCors get cors
 func GetConfigCors() bool {
-    if config.Envs == nil {
-        return false
-    }
-    if v, ok := config.Envs[config.Env]; ok {
-        return v.Cors
-    }
+	if config.Envs == nil {
+		return false
+	}
+	if v, ok := config.Envs[config.Env]; ok {
+		return v.Cors
+	}
 	return false
 }
 
 // GetConfigJWT get jwt
 func GetConfigJWT() bool {
-    return config.JWT
+	return config.JWT
 }
 
 // GetConfigMode get gin mode
 func GetConfigMode() bool {
-    return config.GinMode
+	return config.GinMode
 }

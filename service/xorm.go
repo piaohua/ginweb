@@ -1,9 +1,9 @@
 package service
 
 import (
+	"log"
 	"os"
 	"time"
-	"errors"
 
 	"project/entity"
 
@@ -15,7 +15,7 @@ import (
 // xormEngines
 var xormEngines = make(map[string]*entity.XormEngine)
 
-// SetEngin set Engine
+// SetEngine set Engine
 func SetEngine(k string, e *entity.XormEngine) {
 	xormEngines[k] = e
 }
@@ -31,7 +31,7 @@ func GetEngine(key string) (e *entity.XormEngine) {
 // NewXorm new xorm
 func NewXorm(key string, engine *entity.XormEngine) {
 	if len(key) == 0 {
-		panic(errors.New("key-empty"))
+		log.Panic("key-empty")
 	}
 	InitXorm(engine)
 	SetEngine(key, engine)
@@ -43,7 +43,7 @@ func InitXorm(e *entity.XormEngine) {
 	var engine *xorm.Engine
 	engine, err = xorm.NewEngine(e.DriverName, e.DataSourceName)
 	if err != nil {
-		panic(err)
+		log.Panicf("new engine err: %v\n", err)
 	}
 
 	engine.ShowSQL(e.ShowSQL) //在控制台打印出生成的SQL语句
@@ -60,23 +60,27 @@ func InitXorm(e *entity.XormEngine) {
 	//设置时区
 	engine.TZLocation, err = time.LoadLocation(e.Location)
 	if err != nil {
-		panic(err)
+		log.Panicf("set location err: %v\n", err)
 	}
 
-	//TODO 同步结构
-	err = engine.Sync2()
-	if err != nil {
-		panic(err)
-	}
 	e.Engine = engine
 	go flushDaemon(e)
+}
+
+// sync2 同步结构
+func sync2(e *entity.XormEngine, beans ...interface{}) {
+	err := e.Sync2(beans)
+	if err != nil {
+		log.Panicf("sync2 err: %v\n", err)
+	}
 }
 
 func flushDaemon(e *entity.XormEngine) {
 	for _ = range time.NewTicker(30 * time.Second).C {
 		err := e.Ping()
 		if err != nil {
-			//TODO error log
+			log.Printf("sync2 err: %v\n", err)
+			//TODO
 		}
 	}
 }
@@ -88,7 +92,7 @@ func sql2log(e *entity.XormEngine) {
 	}
 	f, err := os.Create(e.LoggerFile)
 	if err != nil {
-		panic(err)
+		log.Panicf("sql2log err: %v\n", err)
 	}
 	e.SetLogger(xorm.NewSimpleLogger(f))
 }

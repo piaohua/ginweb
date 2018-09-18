@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/EDDYCJY/go-gin-example/pkg/e"
 	"github.com/EDDYCJY/go-gin-example/pkg/util"
+	"github.com/gin-gonic/gin"
 )
 
+// JWT jwt
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int

@@ -9,6 +9,7 @@ import (
 
 var db = make(map[string]string)
 
+// SetupRouter setup router
 func SetupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
