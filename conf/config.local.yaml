@@ -1,0 +1,57 @@
+# version
+version: 0.1.1
+
+# env set
+evn: dev # dev | prod
+
+# gin mode
+mode: debug # release | test
+
+# jwt auth
+jwt: true
+
+# env config
+environments:
+    dev:
+        url: http://dev.xxx.com
+        name: Developer Setup
+        addr: :8080
+        cors: true
+    prod:
+        url: http://prod.xxx.com
+        name: Prod
+        addr: :8080
+        cors: true
+
+# xorm config
+xorm:
+    default: # default
+        driverName: mysql # mysql driver
+        # user:password@tcp(host:port)/database?charset=utf8
+        dataSourceName: root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4
+        showSQL: true
+        loggerLevel: 0
+        maxIdleConns: 5
+        maxOpenConns: 5
+        location: Asia/Shanghai
+        loggerFile: ./logs/sql.log
+    ds1: # ds1
+        driverName: mysql # mysql driver
+        # user:password@tcp(host:port)/database?charset=utf8
+        dataSourceName: root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4
+        showSQL: true
+        loggerLevel: 0
+        maxIdleConns: 5
+        maxOpenConns: 5
+        location: Asia/Shanghai
+        loggerFile: ./logs/sql.log
+    ds2: # ds2
+        driverName: mysql # mysql driver
+        # user:password@tcp(host:port)/database?charset=utf8
+        dataSourceName: root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4
+        showSQL: true
+        loggerLevel: 0
+        maxIdleConns: 5
+        maxOpenConns: 5
+        location: Asia/Shanghai
+        loggerFile: ./logs/sql.log
