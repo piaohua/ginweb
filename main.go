@@ -2,12 +2,16 @@ package main
 
 import (
 	"flag"
-	"runtime"
+	"fmt"
 	"log"
+	"runtime"
+	"syscall"
+	"time"
 
 	"ginweb/routers"
 	"ginweb/service"
 
+	"github.com/fvbock/endless"
 	"github.com/golang/glog"
 )
 
@@ -26,22 +30,35 @@ func main() {
 	config := service.GetConfig()
 	glog.Infof("config: %#v", config)
 	log.Printf("config: %#v", config)
-    if config == nil {
+	if config == nil {
 		log.Panic("config empty")
-    }
+	}
 
-    // 设置路由
+	// 设置路由
 	r := routers.SetupRouter()
 
 	// Listen and Server in 0.0.0.0:8080
-    addr := service.GetConfigAddr()
-    log.Printf("Listen and Server in 0.0.0.0%s\n", addr)
-    if addr == "" {
-        log.Panic("Listen addr empty")
-    }
+	addr := service.GetConfigAddr()
+	log.Printf("Listen and Server in 0.0.0.0%s\n", addr)
+	if addr == "" {
+		log.Panic("Listen addr empty")
+	}
 
-	r.Run(addr)
+	//r.Run(addr)
 
-	//TODO 关闭服务
-	//TODO 热更新
+	// 关闭服务
+	endless.DefaultReadTimeOut = 10 * time.Second
+	endless.DefaultWriteTimeOut = 10 * time.Second
+	endless.DefaultMaxHeaderBytes = 1 << 20
+	endPoint := fmt.Sprintf(":%d", 8090)
+
+	server := endless.NewServer(endPoint, r)
+	server.BeforeBegin = func(add string) {
+		log.Printf("Actual pid is %d", syscall.Getpid())
+	}
+
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Printf("Server err: %v", err)
+	}
 }
