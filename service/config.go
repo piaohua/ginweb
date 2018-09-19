@@ -38,7 +38,7 @@ func GetConfigJWT() bool {
 }
 
 // GetConfigMode get gin mode
-func GetConfigMode() bool {
+func GetConfigMode() string {
 	return config.GinMode
 }
 

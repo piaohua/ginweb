@@ -2,7 +2,7 @@
 version: 0.1.1
 
 # env set
-evn: dev # dev | prod
+env: dev # dev | prod
 
 # gin mode
 mode: debug # release | test

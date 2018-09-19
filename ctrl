@@ -3,6 +3,7 @@
 # 服务启动脚本
 #
 # @author piaohua
+# @email 814004090@qq.com
 # @date 2018-09-18 23:08:46
 # -------------------------------------
 
@@ -47,44 +48,16 @@ get_bin_file() {
     echo ${workDir}/$1-bin
 }
 
-get_nodeid() {
-    # $1=-node=1
-    if [[ ${1} == '-node='* ]]; then
-        echo ${1:0-1:1}
-    fi
-}
-
 get_pid_file() {
-    nodeid=`get_nodeid $2`
-    if [[ ${nodeid} == '' ]]; then
-        echo ${workDir}/$1-bin.pid
-    else
-        #echo ${workDir}/$1${nodeid}-bin.pid
-        echo ${workDir}/$1-bin.pid
-    fi
+    echo ${workDir}/$1-bin.pid
 }
 
 get_pid() {
-    binFile=`get_bin_file $1`
-    if [[ ${binFile} == '' ]]; then
-        return 1
-    fi
-    nodeid=`get_nodeid $2`
-    if [[ ${nodeid} == '' ]]; then
-        ps aux | grep '${binFile}' | grep -v grep | awk '{print $2}' | head -1
-    else
-        ps aux | grep '${binFile}' | grep 'node=${nodeid}' | grep -v grep | awk '{print $2}' | head -1
-    fi
+    ps aux | grep '${binFile}' | grep -v grep | awk '{print $2}' | head -1
 }
 
 get_logfile() {
-    # $2=-node=1
-    if [[ ${2} == '-node='* ]]; then
-        #echo ${1}${2:0-1:1}.log
-        echo ${1}.log
-    else
-        echo ${1}.log
-    fi
+    echo ${1}.log
 }
 
 build() {
@@ -153,10 +126,9 @@ start() {
         fi
         echo -n "正在启动 ... "
         save_log "正在启动 ${binFile} ${2} ... "
-        # $2 as -node="1"
         #ulimit -HSn 65535
         ulimit -HSn 1024
-        logFile=`get_logfile $1 $2`
+        logFile=`get_logfile $1`
         ${binFile} $2 -config=./conf/config.local.yaml -log_dir=logs -stderrthreshold=INFO >& ${logFile} &
         #${binFile} >& error.log 2>&1 &
         echo $! > ${pidFile}
@@ -207,7 +179,7 @@ stop() {
         echo -n "正在停止 ... "
         save_log "${pidFile} 正在停止 ${pid} ... "
         kill -9 $pid
-        #kill -2 $pid
+        #kill -1 $pid
         sleep 15s
         echo "$pid killed!"
         save_log "${pid} killed! "
