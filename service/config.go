@@ -1,8 +1,8 @@
 package service
 
 import (
-	"project/entity"
-	"project/libs"
+	"ginweb/entity"
+	"ginweb/libs"
 )
 
 var config *entity.Config
@@ -40,4 +40,27 @@ func GetConfigJWT() bool {
 // GetConfigMode get gin mode
 func GetConfigMode() bool {
 	return config.GinMode
+}
+
+// GetConfigAddr get addr
+func GetConfigAddr() string {
+	if config.Envs == nil {
+		return ""
+	}
+	if v, ok := config.Envs[config.Env]; ok {
+		return v.Addr
+	}
+	return ""
+}
+
+// GetConfigEnv get env
+func GetConfigEnv() *entity.Environments {
+	if config.Envs == nil {
+		return nil
+	}
+	if v, ok := config.Envs[config.Env]; ok {
+        val := v
+		return &val
+	}
+	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"project/entity"
+	"ginweb/entity"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"

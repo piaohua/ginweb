@@ -5,6 +5,9 @@ type Config struct {
 	Version string                  `yaml:"version"`
 	GinMode string                  `yaml:"mode"`
 	JWT     bool                    `yaml:"jwt"`
+	JWTSecret   string              `yaml:"jwtSecret"`
+	WXAppid     string              `yaml:"wxAppid"`
+	WXAppSecret string              `yaml:"wxAppSecret"`
 	Env     string                  `yaml:"env"`
 	Envs    map[string]Environments `yaml:"environments"`
 	Xorm    map[string]XormEngine   `yaml:"xorm"`

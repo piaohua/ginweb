@@ -10,6 +10,14 @@ mode: debug # release | test
 # jwt auth
 jwt: true
 
+# jwt secret
+jwtSecret: AxFml6c27U6iq2zFAd9qWTodS8KX6PAeH3n21qtfdRE
+
+# wechat appid
+wxAppid: xxx
+# wechat appsecret
+wxAppSecret: xxx
+
 # env config
 environments:
     dev:

@@ -5,8 +5,8 @@ import (
 	"runtime"
 	"log"
 
-	"project/routers"
-	"project/service"
+	"ginweb/routers"
+	"ginweb/service"
 
 	"github.com/golang/glog"
 )
@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	r.Run(service.GetConfigAddr())
 
 	//TODO 关闭服务
 	//TODO 热更新
