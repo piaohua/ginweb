@@ -81,6 +81,7 @@ type CustomClaims struct {
 	jwt.StandardClaims
 }
 
+// NewJWT new jwt
 func NewJWT() *JWT {
 	return &JWT{
 		SigningKey: []byte(GetSignKey()),

@@ -71,7 +71,7 @@ func InitXorm(e *entity.XormEngine) {
 
 // sync2 同步结构
 func sync2(e *entity.XormEngine, beans ...interface{}) {
-	err := e.Sync2(beans)
+	err := e.Sync2(beans...)
 	if err != nil {
 		log.Panicf("sync2 err: %v\n", err)
 	}
