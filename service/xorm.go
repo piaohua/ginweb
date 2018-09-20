@@ -35,6 +35,7 @@ func NewXorm(key string, engine *entity.XormEngine) {
 	}
 	InitXorm(engine)
 	SetEngine(key, engine)
+    // sync2(engine, ...)
 }
 
 // InitXorm init xorm
@@ -50,8 +51,6 @@ func InitXorm(e *entity.XormEngine) {
 	//日志默认显示级别为INFO
 	engine.Logger().SetLevel(core.LogLevel(e.LoggerLevel)) //在控制台打印调试及以上的信息
 
-	sql2log(e) //日志写入文件
-
 	engine.SetMaxIdleConns(e.MaxIdleConns) //设置连接池的空闲数大小,default is 2
 	engine.SetMaxOpenConns(e.MaxOpenConns) //设置最大打开连接数
 
@@ -64,6 +63,9 @@ func InitXorm(e *entity.XormEngine) {
 	}
 
 	e.Engine = engine
+
+	sql2log(e) //日志写入文件
+
 	go flushDaemon(e)
 }
 
@@ -79,7 +81,7 @@ func flushDaemon(e *entity.XormEngine) {
 	for _ = range time.NewTicker(30 * time.Second).C {
 		err := e.Ping()
 		if err != nil {
-			log.Printf("sync2 err: %v\n", err)
+			log.Printf("ping driverName %s err: %v\n", e.DriverName, err)
 			//TODO
 		}
 	}

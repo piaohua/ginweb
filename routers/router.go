@@ -34,6 +34,10 @@ func SetupRouter(config *entity.Config) *gin.Engine {
 
 	// 判断是否开启jwt验证
 	if service.GetConfigJWT() {
+
+        // 设置jwt secret
+        middleware.SetSignKey(service.GetConfigJWTSecret())
+
 		r.Use(middleware.JWTAuth())
 	}
 

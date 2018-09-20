@@ -28,11 +28,18 @@ func main() {
 
 	// 初始化
 	config := service.GetConfig()
-	glog.Infof("config: %#v", config)
-	log.Printf("config: %#v", config)
+	// glog.Infof("config: %#v", config)
+	// log.Printf("config: %#v", config)
 	if config == nil {
 		log.Panic("config empty")
 	}
+
+    // 连接数据库
+    for k, v := range config.Xorm {
+        val := v
+        service.NewXorm(k, &val)
+        log.Printf("driverName %s connected", v.DriverName)
+    }
 
 	// 设置路由
 	r := routers.SetupRouter()
@@ -49,10 +56,9 @@ func main() {
 	// 关闭服务
 	endless.DefaultReadTimeOut = 10 * time.Second
 	endless.DefaultWriteTimeOut = 10 * time.Second
-	endless.DefaultMaxHeaderBytes = 1 << 20
-	endPoint := fmt.Sprintf(":%d", 8090)
+	endless.DefaultMaxHeaderBytes = 1 << 20 // 1M
 
-	server := endless.NewServer(endPoint, r)
+	server := endless.NewServer(addr, r)
 	server.BeforeBegin = func(add string) {
 		log.Printf("Actual pid is %d", syscall.Getpid())
 	}

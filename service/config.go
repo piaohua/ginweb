@@ -37,6 +37,11 @@ func GetConfigJWT() bool {
 	return config.JWT
 }
 
+// GetConfigJWTSecret get JWTSecret
+func GetConfigJWTSecret() string {
+	return config.JWTSecret
+}
+
 // GetConfigMode get gin mode
 func GetConfigMode() string {
 	return config.GinMode
