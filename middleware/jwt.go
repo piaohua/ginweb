@@ -12,7 +12,7 @@ import (
 // JWTAuth 中间件，检查token
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("Authorization")
+		token := c.GetHeader("Authorization")
 		if token == "" {
             c.AbortWithStatusJSON(http.StatusOK, gin.H{
                 "code": http.StatusBadRequest,
@@ -20,44 +20,22 @@ func JWTAuth() gin.HandlerFunc {
             })
 			return
 		}
-		//log.Print("get token: ", token)
-		j := NewJWT()
-		// parseToken
-		claims, err := j.ParseToken(token)
-        if err == TokenExpired {
-            newToken, err := j.RefreshToken(token)
-            if err != nil {
-                c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                    "code": http.StatusBadRequest,
-                    "msg": err.Error(),
-                })
-                return
-            }
-            //c.Header("Authorization", newToken)
-            c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                "code": -1,
-                "data": newToken,
-            })
-            return
-        }
+		// parse token
+		openid, err := ParseToken(token)
+		//log.Printf("token %s\n", token)
 		if err != nil {
+			code := http.StatusBadRequest
+			if err == TokenExpired {
+				code = -99
+			}
             c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                "code": http.StatusBadRequest,
+                "code": code,
                 "msg": err.Error(),
             })
             return
         }
-
-        if claims.OpenID == "" {
-            c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                "code": http.StatusBadRequest,
-                "msg": "filed missing",
-            })
-            return
-        }
-
-		//c.Set("claims", claims)
-		c.Set("openid", claims.OpenID)
+		// set openid
+		c.Set("openid", openid)
 		c.Next()
 	}
 }
@@ -97,6 +75,13 @@ func GetSignKey() string {
 func SetSignKey(key string) string {
 	SignKey = key
 	return SignKey
+}
+
+// jwt Instance
+var jwtIn *JWT
+
+func init()  {
+	jwtIn = NewJWT()
 }
 
 // CreateToken create token
@@ -154,7 +139,7 @@ func (j *JWT) RefreshToken(tokenString string) (string, error) {
 
 // GenToken gen token
 func GenToken(openid string) (string, error) {
-	j := NewJWT()
+	//j := NewJWT()
 	claims := CustomClaims{
 		OpenID: openid,
 		StandardClaims: jwt.StandardClaims{
@@ -162,6 +147,25 @@ func GenToken(openid string) (string, error) {
 			Issuer:    "piaohua",                            //签名的发行者
 		},
 	}
-	token, err := j.CreateToken(claims)
+	token, err := jwtIn.CreateToken(claims)
 	return token, err
+}
+
+// ParseToken parse token
+func ParseToken(token string) (openid string, err error) {
+	//j := NewJWT()
+	var claims *CustomClaims
+	claims, err = jwtIn.ParseToken(token)
+	if err != nil {
+		return
+	}
+	if claims == nil {
+		err = errors.New("parse faild")
+		return
+	}
+	openid = claims.OpenID
+	if openid == "" {
+		err = errors.New("openid wrong")
+	}
+	return
 }
