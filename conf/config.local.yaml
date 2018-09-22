@@ -43,6 +43,7 @@ xorm:
         maxOpenConns: 5
         location: Asia/Shanghai
         loggerFile: ./logs/sql.log
+        prefix: ic_
     ds1: # ds1
         driverName: mysql # mysql driver
         # user:password@tcp(host:port)/database?charset=utf8
@@ -53,6 +54,7 @@ xorm:
         maxOpenConns: 5
         location: Asia/Shanghai
         loggerFile: ./logs/sql.log
+        prefix: ic_
     ds2: # ds2
         driverName: mysql # mysql driver
         # user:password@tcp(host:port)/database?charset=utf8
@@ -63,3 +65,4 @@ xorm:
         maxOpenConns: 5
         location: Asia/Shanghai
         loggerFile: ./logs/sql.log
+        prefix: ic_

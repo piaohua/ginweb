@@ -13,4 +13,5 @@ type XormEngine struct {
 	MaxOpenConns   int    `yaml:"maxOpenConns"`
 	Location       string `yaml:"location"`
 	LoggerFile     string `yaml:"loggerFile"`
+	Prefix         string `yaml:"prefix"`
 }

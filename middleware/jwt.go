@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"errors"
-	"time"
 	"net/http"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -14,10 +14,10 @@ func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
 		if token == "" {
-            c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                "code": http.StatusBadRequest,
-                "msg": "无访问权限",
-            })
+			c.AbortWithStatusJSON(http.StatusOK, gin.H{
+				"code": http.StatusBadRequest,
+				"msg":  "无访问权限",
+			})
 			return
 		}
 		// parse token
@@ -26,14 +26,14 @@ func JWTAuth() gin.HandlerFunc {
 		if err != nil {
 			code := http.StatusBadRequest
 			if err == TokenExpired {
-				code = -99
+				code = -1
 			}
-            c.AbortWithStatusJSON(http.StatusOK, gin.H{
-                "code": code,
-                "msg": err.Error(),
-            })
-            return
-        }
+			c.AbortWithStatusJSON(http.StatusOK, gin.H{
+				"code": code,
+				"msg":  err.Error(),
+			})
+			return
+		}
 		// set openid
 		c.Set("openid", openid)
 		c.Next()
@@ -80,7 +80,7 @@ func SetSignKey(key string) string {
 // jwt Instance
 var jwtIn *JWT
 
-func init()  {
+func init() {
 	jwtIn = NewJWT()
 }
 
@@ -93,9 +93,9 @@ func (j *JWT) CreateToken(claims CustomClaims) (string, error) {
 // ParseToken parse token
 func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{},
-    func(token *jwt.Token) (interface{}, error) {
-		return j.SigningKey, nil
-	})
+		func(token *jwt.Token) (interface{}, error) {
+			return j.SigningKey, nil
+		})
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
@@ -105,11 +105,10 @@ func (j *JWT) ParseToken(tokenString string) (*CustomClaims, error) {
 				return nil, TokenExpired
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				return nil, TokenNotValidYet
-			} else {
-				return nil, TokenInvalid
 			}
+			return nil, TokenInvalid
 		}
-        return nil, err
+		return nil, err
 	}
 	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid {
 		return claims, nil
@@ -122,10 +121,10 @@ func (j *JWT) RefreshToken(tokenString string) (string, error) {
 	jwt.TimeFunc = func() time.Time {
 		return time.Unix(0, 0)
 	}
-    token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{},
-    func(token *jwt.Token) (interface{}, error) {
-		return j.SigningKey, nil
-	})
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{},
+		func(token *jwt.Token) (interface{}, error) {
+			return j.SigningKey, nil
+		})
 	if err != nil {
 		return "", err
 	}
@@ -144,7 +143,7 @@ func GenToken(openid string) (string, error) {
 		OpenID: openid,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(1 * time.Hour).Unix(), // 过期时间
-			Issuer:    "piaohua",                            //签名的发行者
+			Issuer:    "piaohua",                            // 签名的发行者
 		},
 	}
 	token, err := jwtIn.CreateToken(claims)

@@ -28,6 +28,11 @@ func GetEngine(key string) (e *entity.XormEngine) {
 	return xormEngines["default"]
 }
 
+// GetDefaultEngine get default engine
+func GetDefaultEngine() (e *entity.XormEngine) {
+	return GetEngine("default")
+}
+
 // NewXorm new xorm
 func NewXorm(key string, engine *entity.XormEngine) {
 	if len(key) == 0 {
@@ -35,7 +40,7 @@ func NewXorm(key string, engine *entity.XormEngine) {
 	}
 	InitXorm(engine)
 	SetEngine(key, engine)
-    // sync2(engine, ...)
+	// sync2(engine, ...)
 }
 
 // InitXorm init xorm
@@ -54,7 +59,8 @@ func InitXorm(e *entity.XormEngine) {
 	engine.SetMaxIdleConns(e.MaxIdleConns) //设置连接池的空闲数大小,default is 2
 	engine.SetMaxOpenConns(e.MaxOpenConns) //设置最大打开连接数
 
-	engine.SetMapper(core.GonicMapper{})
+	tbMapper := core.NewPrefixMapper(core.GonicMapper{}, e.Prefix)
+	engine.SetTableMapper(tbMapper)
 
 	//设置时区
 	engine.TZLocation, err = time.LoadLocation(e.Location)
