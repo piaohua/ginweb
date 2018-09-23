@@ -25,6 +25,8 @@ func SetupRouter(config *entity.Config) *gin.Engine {
 
 	// 静态资源
 	r.Static("/assets", "./assets")
+	//r.StaticFS("/assets/static", http.Dir("./assets/static"))
+	//r.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	// Register Router
 	new(controllers.RegisterController).Router(r)
