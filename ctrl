@@ -178,8 +178,8 @@ stop() {
     if [ "$pid" != '' ]; then
         echo -n "正在停止 ... "
         save_log "${pidFile} 正在停止 ${pid} ... "
-        kill -9 $pid
-        #kill -1 $pid
+        #kill -9 $pid
+        kill -1 $pid
         sleep 15s
         echo "$pid killed!"
         save_log "${pid} killed! "
