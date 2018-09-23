@@ -1,7 +1,6 @@
 package libs
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"os/exec"
 	"time"

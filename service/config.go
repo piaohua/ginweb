@@ -64,8 +64,13 @@ func GetConfigEnv() *entity.Environments {
 		return nil
 	}
 	if v, ok := config.Envs[config.Env]; ok {
-        val := v
+		val := v
 		return &val
 	}
 	return nil
+}
+
+// GetConfigWXAppid get weixin appid
+func GetConfigWXAppid() string {
+	return config.WXAppid
 }

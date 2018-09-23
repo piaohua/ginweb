@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"runtime"
 	"syscall"
@@ -34,15 +33,15 @@ func main() {
 		log.Panic("config empty")
 	}
 
-    // 连接数据库
-    for k, v := range config.Xorm {
-        val := v
-        service.NewXorm(k, &val)
-        log.Printf("driverName %s connected", v.DriverName)
-    }
+	// 连接数据库
+	for k, v := range config.Xorm {
+		val := v
+		service.NewXorm(k, &val)
+		log.Printf("driverName %s connected", v.DriverName)
+	}
 
 	// 设置路由
-	r := routers.SetupRouter()
+	r := routers.SetupRouter(config)
 
 	// Listen and Server in 0.0.0.0:8080
 	addr := service.GetConfigAddr()
