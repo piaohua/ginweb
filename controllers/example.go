@@ -12,7 +12,6 @@ import (
 
 // ExampleController example controller
 type ExampleController struct {
-	BaseController
 }
 
 // Router setup router
